@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import json
 import re
 from ustclogin import Login
+import datetime
 class Report(object):
     def __init__(self, stuid, password, data_path):
         self.stuid = stuid
@@ -51,6 +52,10 @@ class Report(object):
             data['t']='2'
             file={'file':open('safe.jpg','rb')}
             login.session.post('https://weixine.ustc.edu.cn/2020img/api/upload_for_student',headers=headers,data=data,files=file)
+            if datetime.datetime.today().weekday() == 4:
+                data['t'] = '3'
+                file={'file':open('Top.png','rb')}
+                login.session.post('https://weixine.ustc.edu.cn/2020img/api/upload_for_student',headers=headers,data=data,files=file)
             data=login.session.get('https://weixine.ustc.edu.cn/2020/apply/daliy',headers=headers).text #报备
             data = data.encode('ascii','ignore').decode('utf-8','ignore')
             soup = BeautifulSoup(data, 'html.parser')
@@ -66,7 +71,8 @@ class Report(object):
                 'end_date':end_date,
                 'return_college[]':'西校区',
                 'return_college[]':'中校区',
-                'reason':'跨校区上课',
+                'return_college[]':'东校区',
+                'reason':'跨校区上课，图书馆',
                 't':'3'}
             post=login.session.post('https://weixine.ustc.edu.cn/2020/apply/daliy/ipost',data=data)
             if post.url=='\
