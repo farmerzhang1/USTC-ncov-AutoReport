@@ -47,10 +47,10 @@ class Report(object):
             data=json.loads(data)
             data['t']='1' #1是上传行程码，2是上传健康码，3是上传核酸检测报告
             data['id']='WU_FILE_0'
-            file={'file':open('trace.jpg','rb')}
+            file={'file':open('trace.png','rb')}
             login.session.post('https://weixine.ustc.edu.cn/2020img/api/upload_for_student',headers=headers,data=data,files=file)
             data['t']='2'
-            file={'file':open('safe.jpg','rb')}
+            file={'file':open('safe.png','rb')}
             login.session.post('https://weixine.ustc.edu.cn/2020img/api/upload_for_student',headers=headers,data=data,files=file)
             if datetime.datetime.today().weekday() == 4:
                 data['t'] = '3'
