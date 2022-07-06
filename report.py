@@ -69,11 +69,7 @@ class Report(object):
                 '_token':token,
                 'start_date':start_date,
                 'end_date':end_date,
-                'return_college[]': '东校区',
-                'return_college[]': '西校区',
-                'return_college[]': '南校区',
-                'return_college[]': '北校区',
-                'return_college[]': '中校区',
+                'return_college[]': ['东校区','西校区','南校区','北校区','中校区'],
                 'reason':'跨校区上课，图书馆',
                 't':'3'}
             post=login.session.post('https://weixine.ustc.edu.cn/2020/apply/daliy/ipost',data=data)
