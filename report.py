@@ -73,11 +73,26 @@ class Report(object):
                 'reason':'跨校区上课，图书馆',
                 't':'3'}
             post=login.session.post('https://weixine.ustc.edu.cn/2020/apply/daliy/ipost',data=data)
-            if post.url=='\
-https://weixine.ustc.edu.cn/2020/apply_total?t=d' and flag==True:
+            if post.url=='https://weixine.ustc.edu.cn/2020/apply_total?t=d' and flag==True:
                 flag=True
             else:
                 flag=False
+            # 高新区
+            data=login.session.get('https://weixine.ustc.edu.cn/2020/apply/daliy/i?t=4',headers=headers).text
+            data = data.encode('ascii','ignore').decode('utf-8','ignore')
+            soup = BeautifulSoup(data, 'html.parser')
+            start_date = soup.find("input", {"id": "start_date"})['value']
+            end_date = soup.find("input", {"id": "end_date"})['value']
+            data={
+                '_token':token,
+                'start_date':start_date,
+                'end_date':end_date,
+                'return_college[]': ['高新校区'],
+                'reason':'跨校区上课，实验室',
+                't':'4'}
+            post=login.session.post('https://weixine.ustc.edu.cn/2020/apply/daliy/ipost',data=data)
+            if post.url=='https://weixine.ustc.edu.cn/2020/apply_total?t=d' and flag==True:
+                flag=True
             if flag == False:
                 print("Report FAILED!")
             else:
