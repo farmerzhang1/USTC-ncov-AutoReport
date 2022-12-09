@@ -22,6 +22,7 @@ class Report(object):
             data = login.result.text
             data = data.encode("ascii", "ignore").decode("utf-8", "ignore")
             soup = BeautifulSoup(data, "html.parser")
+            # search for tags with specific attributes
             token = soup.find("input", {"name": "_token"})["value"]
 
             with open(self.data_path, "r+", encoding="utf-8") as f:
@@ -31,13 +32,13 @@ class Report(object):
             headers = {
                 "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36 Edg/99.0.1150.39",
             }
-
-            url = "https://weixine.ustc.edu.cn/2020/daliy_report"
+            # 打卡
+            url = "https://weixine.ustc.edu.cn/2020/daliy_report" # SB USTC misspelling
             data = login.session.post(url, data=data, headers=headers).text
             soup = BeautifulSoup(data, "html.parser")
-            token = soup.select("p.alert.alert-success")[0]
+            response = soup.select("p.alert.alert-success")[0].text
             flag = False
-            if "成功" in token.text:
+            if "成功" in response:
                 flag = True
             headers = {
                 "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36 Edg/99.0.1150.39"
@@ -45,6 +46,15 @@ class Report(object):
             url = "https://weixine.ustc.edu.cn/2020/upload/xcm"  # 上传两码
             data = login.session.get(url, headers=headers).text
             data = data.encode("ascii", "ignore").decode("utf-8", "ignore")
+            """
+            hidden in comments
+            formData:{
+                    _token: '_',
+                    'gid': '_',
+                    'sign': '_',
+                    't' : 1
+            },
+            """
             data = re.search(r"formData:{([\s\S]*?)}", data, re.M)
             data = "{" + data.group(1) + "}"
             data = data.replace("_token", "'token'")
@@ -119,7 +129,7 @@ class Report(object):
                 "_token": token,
                 "start_date": start_date,
                 "end_date": end_date,
-                "return_college[]": ["高新校区"],
+                "return_college[]": ["高新校区"], # this field takes a list, so the key ends with brackets (I guess)
                 "reason": "跨校区上课，实验室",
                 "t": "4",
             }
